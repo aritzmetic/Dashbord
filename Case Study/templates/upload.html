@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DepEd Admin Panel</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Candu&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        /* DepEd Solid Color Palette */
+        :root {
+            --deped-blue: #00308F; /* Deep Blue */
+            --deped-yellow: #FFDA63; /* Golden Yellow */
+            --deped-light-blue: #ADD8E6; /* Light Blue */
+            --deped-white: #FFFFFF;
+            --deped-gray: #D3D3D3;
+            --deped-success: #28a745; /* Green for success */
+            --deped-error: #dc3545; /* Red for error (example) */
+            --text-dark: #333;
+            --text-light: #777;
+            --box-shadow-sm: 0 2px 5px rgba(0, 0, 0, 0.08);
+            --box-shadow-md: 0 4px 10px rgba(0, 0, 0, 0.12);
+            --transition-default: all 0.3s ease-in-out;
+            --border-radius-md: 10px;
+            --border-radius-sm: 5px;
+        }
+
+        /* DepEd Fonts */
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: var(--deped-white);
+            color: var(--text-dark);
+            line-height: 1.6;
+            padding: 20px;
+            padding-top: 80px; /* Add padding-top to prevent content overlap by sticky header */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Candu', sans-serif;
+            color: var(--deped-white); /* Changed default to white for header */
+            margin-bottom: 0.6em;
+            letter-spacing: -0.5px;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            animation: fadeInDown 0.8s ease-out;
+            margin-bottom: 0;
+        }
+
+        h2 {
+            font-size: 2rem;
+            color: var(--deped-blue); /* Specific color for section headers */
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            color: var(--deped-blue); /* Specific color for popup headers */
+        }
+
+        /* Solid Header Section - STICKY */
+        header {
+            background-color: var(--deped-blue);
+            color: var(--deped-white);
+            padding: 15px 20px;
+            border-radius: 0 0 var(--border-radius-md) var(--border-radius-md); /* Rounded bottom corners */
+            margin-bottom: 20px;
+            box-shadow: var(--box-shadow-md); /* Slightly stronger shadow */
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: fixed; /* Changed to fixed */
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000; /* High z-index for sticky header */
+            transition: padding 0.3s ease-in-out; /* Transition for potential scroll effects */
+        }
+
+        header h1 {
+            font-size: 2rem;
+            margin: 0;
+        }
+
+        /* Navigation and Account Dropdown Container */
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+
+        /* Solid Navigation Bar */
+        nav {
+            background-color: transparent;
+            border-radius: var(--border-radius-md);
+            padding: 0;
+            margin: 0;
+            margin-right: 10px;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            gap: 10px;
+        }
+
+        nav ul li a {
+            display: inline-block;
+            padding: 8px 15px;
+            text-decoration: none;
+            color: var(--deped-blue);
+            background-color: var(--deped-white);
+            border: 1px solid var(--deped-yellow);
+            border-radius: var(--border-radius-sm);
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: var(--transition-default);
+        }
+
+        nav ul li a:hover {
+            background-color: var(--deped-blue);
+            color: var(--deped-yellow);
+            border-color: var(--deped-blue);
+            transform: translateY(-2px) scale(1.02); /* Enhanced hover */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Enhanced shadow */
+        }
+
+        nav ul li a:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px var(--deped-light-blue);
+        }
+
+        nav ul li a i {
+            margin-right: 4px; /* Slightly more space */
+        }
+
+        /* Hamburger Menu */
+        .hamburger-menu {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 35px; /* Slightly larger */
+            height: 35px;
+            cursor: pointer;
+            gap: 6px;
+            z-index: 1030; /* Higher than mobile nav */
+            margin-left: 10px; /* Space from account icon */
+        }
+
+        .hamburger-menu .bar {
+            width: 28px; /* Slightly wider */
+            height: 3px;
+            background-color: var(--deped-white);
+            border-radius: 3px;
+            transition: var(--transition-default), transform 0.3s ease-in-out; /* Added transform transition */
+        }
+
+        /* Hamburger animation when active */
+        .hamburger-menu.active .bar:nth-child(1) {
+            transform: translateY(9px) rotate(45deg);
+        }
+        .hamburger-menu.active .bar:nth-child(2) {
+            opacity: 0;
+        }
+        .hamburger-menu.active .bar:nth-child(3) {
+            transform: translateY(-9px) rotate(-45deg);
+        }
+
+
+        .mobile-nav-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6); /* Darker overlay */
+            z-index: 1010;
+            opacity: 0;
+            transition: opacity 0.4s ease-in-out;
+        }
+        .mobile-nav-overlay.open {
+             display: block;
+             opacity: 1;
+        }
+
+        .mobile-nav {
+            display: block; /* Keep it block for transition */
+            position: fixed;
+            top: 0; /* Align to top */
+            right: -320px; /* Start off-screen to the right */
+            width: 300px;
+            height: 100%; /* Full height */
+            background-color: var(--deped-blue);
+            box-shadow: -5px 0 15px rgba(0,0,0,0.2); /* Shadow on the left */
+            z-index: 1020;
+            transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); /* Smoother slide */
+            padding-top: 70px; /* Space for close button */
+            overflow-y: auto; /* Allow scrolling if needed */
+        }
+
+        .mobile-nav.open {
+            transform: translateX(-320px); /* Slide in */
+        }
+
+        .mobile-nav .close-btn {
+            position: absolute;
+            top: 20px; /* Position relative to nav */
+            right: 20px;
+            color: var(--deped-yellow);
+            font-size: 1.8rem; /* Larger close icon */
+            cursor: pointer;
+            border: none;
+            background: none;
+            padding: 5px;
+            line-height: 1;
+        }
+
+        .mobile-nav ul {
+            list-style: none;
+            padding: 20px;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: flex-start; /* Align items left */
+        }
+
+        .mobile-nav ul li {
+            width: 100%; /* Make list items full width */
+        }
+
+        .mobile-nav ul li a {
+            display: block;
+            text-decoration: none;
+            color: var(--deped-yellow);
+            padding: 12px 20px;
+            border-radius: var(--border-radius-sm);
+            transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+            text-align: left; /* Align text left */
+            width: 100%;
+            font-size: 1.1rem; /* Slightly larger font */
+        }
+         .mobile-nav ul li a i {
+             margin-right: 10px; /* Space between icon and text */
+             width: 20px; /* Ensure icon alignment */
+             text-align: center;
+         }
+
+        .mobile-nav ul li a:hover {
+            background-color: rgba(255, 218, 99, 0.2); /* Light yellow background */
+            color: var(--deped-white); /* White text on hover */
+        }
+
+        /* Account Pop-up */
+        .account-popup {
+            display: block; /* Keep block for transitions */
+            position: absolute;
+            top: 65px; /* Position below header */
+            right: 20px;
+            background-color: var(--deped-white);
+            border: 1px solid var(--deped-gray);
+            border-radius: var(--border-radius-sm);
+            box-shadow: var(--box-shadow-md); /* Enhanced shadow */
+            padding: 15px;
+            z-index: 1015; /* Above overlay, below mobile nav */
+            width: 180px; /* Slightly wider */
+            text-align: left; /* Align content left */
+            opacity: 0;
+            transform: translateY(-10px) scale(0.95); /* Initial state */
+            transform-origin: top right;
+            pointer-events: none; /* Prevent interaction when hidden */
+            transition: opacity 0.25s ease-out, transform 0.25s ease-out;
+        }
+
+        .account-popup.open {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: auto; /* Allow interaction when open */
+        }
+
+         .account-popup h4 {
+             margin-bottom: 15px; /* Space below title */
+             font-size: 1.1rem;
+             font-weight: 600;
+             color: var(--deped-blue);
+             text-align: center;
+             border-bottom: 1px solid var(--deped-gray);
+             padding-bottom: 8px;
+         }
+
+        .account-popup button {
+            display: flex; /* Use flex for icon alignment */
+            align-items: center;
+            width: 100%;
+            padding: 10px 12px; /* More padding */
+            margin-bottom: 8px;
+            border: none; /* Remove default border */
+            border-radius: var(--border-radius-sm);
+            background-color: transparent; /* Transparent background */
+            color: var(--deped-blue);
+            font-size: 0.95rem; /* Slightly larger */
+            cursor: pointer;
+            transition: var(--transition-default);
+            text-align: left;
+        }
+        .account-popup button:last-child {
+             margin-bottom: 0;
+        }
+
+         .account-popup button i {
+             margin-right: 8px; /* Space between icon and text */
+             width: 16px; /* Align icons */
+         }
+
+        .account-popup button:hover {
+            background-color: var(--deped-light-blue);
+            color: var(--deped-blue);
+        }
+
+        /* Admin Panel Section */
+        #admin-panel-section {
+            padding: 20px 0; /* Remove side padding, use body padding */
+        }
+
+        .admin-panel-container {
+            background-color: transparent; /* Remove container background */
+            border-radius: var(--border-radius-md);
+            box-shadow: none; /* Remove container shadow */
+            overflow: visible; /* Allow shadows from children */
+            display: flex;
+            gap: 30px; /* Increased gap */
+            align-items: flex-start;
+        }
+
+        .upload-section {
+            flex: 1;
+            background-color: var(--deped-white);
+            border-radius: var(--border-radius-md);
+            box-shadow: var(--box-shadow-md); /* Added shadow */
+            padding: 25px; /* Increased padding */
+            text-align: center;
+            /* Styles for scroll animation */
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .upload-section.is-visible {
+             opacity: 1;
+             transform: translateY(0);
+        }
+
+        .upload-section h2 {
+            margin-bottom: 20px; /* More space */
+            color: var(--deped-blue);
+            font-size: 1.8rem; /* Slightly larger */
+            font-weight: bold;
+            border-bottom: 2px solid var(--deped-yellow); /* Add underline */
+            padding-bottom: 10px;
+            display: inline-block; /* Fit underline to text */
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+            max-width: 350px; /* Increased max width */
+            margin: 15px 0;
+        }
+
+        .file-input-wrapper input[type="file"] {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0; /* Hide the default input */
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-input-button {
+            display: inline-block;
+            padding: 12px 20px;
+            font-size: 1rem;
+            border-radius: var(--border-radius-sm);
+            border: 1px dashed var(--deped-blue); /* Dashed border */
+            background-color: var(--deped-light-blue);
+            color: var(--deped-blue);
+            width: 100%;
+            text-align: center;
+            transition: var(--transition-default);
+        }
+        .file-input-button i {
+            margin-right: 8px;
+        }
+
+        .file-input-wrapper:hover .file-input-button {
+             background-color: #c1e7f5; /* Slightly darker light blue */
+             border-style: solid;
+        }
+
+        .file-name {
+            display: block;
+            margin-top: 8px;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            min-height: 1.2em; /* Prevent layout shift */
+            word-break: break-all; /* Handle long filenames */
+        }
+
+        .upload-section button[type="submit"] {
+            padding: 12px 25px; /* More padding */
+            background-color: var(--deped-blue);
+            color: var(--deped-yellow);
+            border: none;
+            border-radius: var(--border-radius-sm);
+            font-size: 1rem; /* Larger font */
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-default), transform 0.1s ease;
+            max-width: 350px;
+            width: 100%;
+            margin-top: 15px; /* More space */
+            box-shadow: var(--box-shadow-sm);
+        }
+
+        .upload-section button[type="submit"]:hover {
+            background-color: var(--deped-yellow);
+            color: var(--deped-blue);
+            box-shadow: var(--box-shadow-md);
+            transform: translateY(-2px);
+        }
+        .upload-section button[type="submit"]:active {
+            transform: translateY(0);
+        }
+
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 25px 0;
+            margin-top: 40px; /* More space */
+            border-top: 1px solid var(--deped-gray); /* Add separator */
+        }
+
+        footer button {
+            padding: 12px 25px;
+            background-color: var(--deped-blue);
+            color: var(--deped-yellow);
+            border: none;
+            border-radius: var(--border-radius-sm);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-default);
+            box-shadow: var(--box-shadow-sm);
+        }
+
+        footer button:hover {
+            background-color: var(--deped-yellow);
+            color: var(--deped-blue);
+            box-shadow: var(--box-shadow-md);
+            transform: translateY(-2px);
+        }
+
+        /* Alert Message Style (Used by Flask flash messages) */
+        .alert {
+            background-color: var(--deped-error); /* Use error color */
+            color: white;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: var(--border-radius-sm);
+            font-size: 1rem;
+            font-weight: 600;
+            text-align: left;
+        }
+
+        .alert ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .alert li {
+            font-size: 1rem;
+        }
+         .alert li::before {
+             content: "\f071"; /* Font Awesome warning icon */
+             font-family: "Font Awesome 6 Free";
+             font-weight: 900;
+             margin-right: 8px;
+         }
+
+
+        /* Toast Notification Styles */
+        #toast-container {
+            position: fixed;
+            top: 80px; /* Below sticky header */
+            right: 20px;
+            z-index: 2000; /* Above everything */
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 300px; /* Fixed width */
+        }
+
+        .toast {
+            background-color: var(--deped-success); /* Default success */
+            color: white;
+            padding: 15px 20px;
+            border-radius: var(--border-radius-sm);
+            box-shadow: var(--box-shadow-md);
+            font-size: 0.95rem;
+            font-weight: 600;
+            opacity: 0;
+            transform: translateX(100%); /* Start off-screen */
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55); /* Bouncy transition */
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .toast.toast-error {
+            background-color: var(--deped-error);
+        }
+        /* Add more types if needed (warning, info) */
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .toast i {
+            font-size: 1.2rem;
+        }
+
+
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+                padding-top: 75px; /* Adjust for potentially smaller header */
+            }
+            header {
+                padding: 12px 15px;
+                border-radius: 0 0 var(--border-radius-sm) var(--border-radius-sm);
+            }
+            header h1 {
+                 font-size: 1.6rem;
+             }
+            header h1 i {
+                 font-size: 1.5rem; /* Adjust icon size */
+                 margin-right: 8px;
+             }
+
+            .admin-panel-container {
+                flex-direction: column; /* Stack sections */
+                gap: 20px;
+            }
+
+            .upload-section {
+                width: 100%;
+                margin-bottom: 0; /* Removed bottom margin as gap handles it */
+                padding: 20px;
+            }
+            .upload-section h2 {
+                font-size: 1.6rem;
+            }
+
+            nav {
+                display: none; /* Hide desktop nav */
+            }
+
+            .header-right {
+                justify-content: flex-end;
+                width: auto;
+            }
+
+            .hamburger-menu {
+                display: flex; /* Show hamburger */
+            }
+
+            .account-popup {
+                top: 60px; /* Adjust position */
+                right: 15px;
+                width: 200px; /* Can be wider on mobile */
+            }
+
+             #toast-container {
+                 width: calc(100% - 30px); /* Full width minus padding */
+                 right: 15px;
+                 top: 75px; /* Below header */
+             }
+
+            /* Mobile nav is already handled */
+        }
+
+    </style>
+    </head>
+<body>
+    <header>
+        <h1><i class="fas fa-cog"></i> DepEd Admin Panel</h1>
+        <div class="header-right">
+            <nav>
+                <ul>
+                    <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+                    <li><a href="/enrollment"><i class="fas fa-map-marker-alt"></i> By Location</a></li>
+                    <li><a href="/historical_view"><i class="fas fa-chart-line"></i> By Year</a></li>
+                    <li><a href="/generate_report"><i class="fas fa-file-alt"></i> Reports</a></li>
+                    <li><a href="/upload"><i class="fas fa-cogs"></i> Admin</a></li> <li><a href="#" id="accountBtn"><i class="fas fa-user-circle"></i></a></li>
+                </ul>
+            </nav>
+            <div class="hamburger-menu" id="hamburger">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+        </div>
+    </header>
+
+    <div class="mobile-nav-overlay" id="navOverlay"></div>
+    <div class="mobile-nav" id="mobileNav">
+        <button class="close-btn" id="closeNav"><i class="fas fa-times"></i></button>
+        <ul>
+             <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="/enrollment"><i class="fas fa-map-marker-alt"></i> By Location</a></li>
+            <li><a href="/historical_view"><i class="fas fa-chart-line"></i> By Year</a></li>
+            <li><a href="/generate_report"><i class="fas fa-file-alt"></i> Reports</a></li>
+            <li><a href="/upload"><i class="fas fa-cogs"></i> Admin</a></li>
+            <hr style="border-color: rgba(255, 218, 99, 0.3); width: 90%; margin: 10px auto;"> <li><a href="/account"><i class="fas fa-user"></i> Account</a></li>
+            <li><a href="/settings"><i class="fas fa-cog"></i> Settings</a></li>
+            <li><a href="/help"><i class="fas fa-question-circle"></i> Help</a></li>
+            <li><a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+    </div>
+
+    <div class="account-popup" id="accountPopup">
+        <h4>Account Menu</h4>
+        <button onclick="window.location.href='/account'"><i class="fas fa-user"></i> Account</button>
+        <button onclick="window.location.href='/settings'"><i class="fas fa-cog"></i> Settings</button>
+        <button onclick="window.location.href='/help'"><i class="fas fa-question-circle"></i> Help</button>
+        <button onclick="window.location.href='/logout'"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    </div>
+
+    <div id="toast-container"></div>
+
+    <section id="admin-panel-section">
+        <div class="admin-panel-container">
+            <div class="upload-section fade-in-on-scroll" id="data-cleaning">
+                <h2><i class="fas fa-broom"></i> Clean Enrollment Data</h2>
+                 <form action="/clean" method="POST" enctype="multipart/form-data" id="cleanForm">
+                    <div class="file-input-wrapper">
+                         <span class="file-input-button"><i class="fas fa-file-csv"></i> Choose Uncleaned CSV...</span>
+                         <input type="file" name="uncleaned_file" id="uncleaned_file_input" accept=".csv" required />
+                         <span class="file-name" id="uncleaned-filename">No file selected</span>
+                    </div>
+                    <br>
+                    <button type="submit"><i class="fas fa-upload"></i> Upload & Clean Data</button>
+                </form>
+                <p style="font-size: 0.9rem; margin-top: 15px; color: var(--text-light);">Cleaned data will be downloaded to your PC after processing.</p>
+            </div>
+
+            <div class="upload-section fade-in-on-scroll" id="file-upload">
+                <h2><i class="fas fa-database"></i> Upload Enrollment Data</h2>
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        <div class="alert">
+                            <ul>
+                                {% for message in messages %}
+                                    <li>{{ message }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                {% endwith %}
+                 <form action="/upload" method="POST" enctype="multipart/form-data" id="uploadForm">
+                     <div class="file-input-wrapper">
+                         <span class="file-input-button"><i class="fas fa-file-csv"></i> Choose Cleaned CSV...</span>
+                         <input type="file" name="file" id="upload_file_input" accept=".csv" required />
+                         <span class="file-name" id="upload-filename">No file selected</span>
+                    </div>
+                    <br>
+                    <button type="submit"><i class="fas fa-check-circle"></i> Upload to Dashboard</button>
+                </form>
+                 <p style="font-size: 0.9rem; margin-top: 15px; color: var(--text-light);">This data will update the dashboard views.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <button onclick="window.location.href='/'"><i class="fas fa-arrow-left"></i> Back to Dashboard</button>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const hamburger = document.getElementById('hamburger');
+            const mobileNav = document.getElementById('mobileNav');
+            const navOverlay = document.getElementById('navOverlay');
+            const closeNav = document.getElementById('closeNav');
+            const accountBtn = document.getElementById('accountBtn');
+            const accountPopup = document.getElementById('accountPopup');
+
+            // --- Mobile Navigation Toggle ---
+            function toggleMobileNav(isOpen) {
+                 if (isOpen) {
+                     hamburger.classList.add('active');
+                     mobileNav.classList.add('open');
+                     navOverlay.classList.add('open');
+                     document.body.style.overflow = 'hidden'; // Prevent background scroll
+                 } else {
+                     hamburger.classList.remove('active');
+                     mobileNav.classList.remove('open');
+                     navOverlay.classList.remove('open');
+                     document.body.style.overflow = ''; // Restore scroll
+                 }
+            }
+
+            hamburger.addEventListener('click', function() {
+                const isOpen = mobileNav.classList.contains('open');
+                toggleMobileNav(!isOpen);
+            });
+
+            closeNav.addEventListener('click', function() {
+                toggleMobileNav(false);
+            });
+
+            navOverlay.addEventListener('click', function() {
+                toggleMobileNav(false);
+            });
+
+            // --- Account Pop-up Toggle ---
+             accountBtn.addEventListener('click', function(event) {
+                 event.preventDefault(); // Prevent link behavior
+                 event.stopPropagation(); // Prevent closing immediately
+                 accountPopup.classList.toggle('open');
+             });
+
+             // Close popups if clicked outside
+             document.addEventListener('click', function(event) {
+                 // Close account popup
+                 if (accountPopup.classList.contains('open') && !accountPopup.contains(event.target) && !accountBtn.contains(event.target)) {
+                     accountPopup.classList.remove('open');
+                 }
+                 // Close mobile nav if clicking outside the nav itself (overlay click is handled separately)
+                 if (mobileNav.classList.contains('open') && !mobileNav.contains(event.target) && !hamburger.contains(event.target)) {
+                    // Optional: close nav on outside click too, uncomment if desired
+                    // toggleMobileNav(false);
+                 }
+             });
+
+
+             // --- File Name Display ---
+             function handleFileInputChange(inputId, filenameId) {
+                 const input = document.getElementById(inputId);
+                 const filenameSpan = document.getElementById(filenameId);
+                 if (input) {
+                     input.addEventListener('change', function(e) {
+                         if (e.target.files && e.target.files.length > 0) {
+                             filenameSpan.textContent = e.target.files[0].name;
+                         } else {
+                             filenameSpan.textContent = 'No file selected';
+                         }
+                     });
+                 }
+             }
+             handleFileInputChange('uncleaned_file_input', 'uncleaned-filename');
+             handleFileInputChange('upload_file_input', 'upload-filename');
+
+
+            // --- Toast Notification Function ---
+            const toastContainer = document.getElementById('toast-container');
+
+            function showToast(message, type = 'success', duration = 4000) {
+                if (!toastContainer) return;
+
+                const toast = document.createElement('div');
+                toast.className = `toast toast-${type}`;
+
+                let iconClass = 'fas fa-check-circle'; // Default success
+                if (type === 'error') iconClass = 'fas fa-times-circle';
+                // Add more types like 'warning' (fa-exclamation-triangle), 'info' (fa-info-circle)
+
+                toast.innerHTML = `<i class="${iconClass}"></i> ${message}`;
+                toastContainer.appendChild(toast);
+
+                // Trigger animation
+                requestAnimationFrame(() => {
+                     requestAnimationFrame(() => {
+                         toast.classList.add('show');
+                     });
+                });
+
+                // Auto remove toast
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    // Remove element after transition ends
+                    toast.addEventListener('transitionend', () => {
+                        if (toast.parentNode === toastContainer) { // Ensure it hasn't been removed already
+                             toastContainer.removeChild(toast);
+                        }
+                    }, { once: true });
+                     // Fallback removal if transitionend doesn't fire reliably
+                     setTimeout(() => {
+                         if (toast.parentNode === toastContainer) {
+                             toastContainer.removeChild(toast);
+                         }
+                     }, 600); // Slightly longer than CSS transition
+                }, duration);
+            }
+
+            // --- Attach Toast to Form Submissions ---
+            const cleanForm = document.getElementById('cleanForm');
+            const uploadForm = document.getElementById('uploadForm');
+
+            if(cleanForm) {
+                cleanForm.addEventListener('submit', function(e) {
+                    // Basic validation check (file selected)
+                    if (!document.getElementById('uncleaned_file_input').files.length) {
+                        e.preventDefault(); // Stop submission
+                        showToast('Please select an uncleaned file to upload.', 'error');
+                    } else {
+                        // Show toast *before* submitting (page will reload/redirect)
+                        showToast('Uploading uncleaned data... Cleaned file will download shortly.', 'success', 5000);
+                        // Allow default form submission to proceed
+                    }
+                });
+            }
+
+            if(uploadForm) {
+                uploadForm.addEventListener('submit', function(e) {
+                     if (!document.getElementById('upload_file_input').files.length) {
+                        e.preventDefault(); // Stop submission
+                        showToast('Please select a cleaned file to upload.', 'error');
+                    } else {
+                        showToast('Uploading enrollment data to dashboard...', 'success', 5000);
+                        // Allow default form submission to proceed
+                    }
+                });
+            }
+
+
+            // --- Scroll Animation (Intersection Observer) ---
+            const observerOptions = {
+                root: null, // relative to document viewport
+                rootMargin: '0px',
+                threshold: 0.1 // Trigger when 10% of the element is visible
+            };
+
+            const observerCallback = (entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target); // Animate only once
+                    }
+                });
+            };
+
+            const scrollObserver = new IntersectionObserver(observerCallback, observerOptions);
+            const elementsToAnimate = document.querySelectorAll('.fade-in-on-scroll');
+
+            elementsToAnimate.forEach(el => {
+                scrollObserver.observe(el);
+            });
+
+        });
+    </script>
+</body>
+</html>

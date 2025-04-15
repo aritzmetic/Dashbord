@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geographic View</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Candu&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        /* DepEd Solid Color Palette */
+        :root {
+            --deped-blue: #00308F; /* Deep Blue */
+            --deped-yellow: #FFDA63; /* Golden Yellow */
+            --deped-light-blue: #ADD8E6; /* Light Blue */
+            --deped-white: #FFFFFF;
+            --deped-gray: #D3D3D3;
+            --text-dark: #333;
+            --text-light: #777;
+            --box-shadow-sm: 0 2px 5px rgba(0, 0, 0, 0.08);
+            --transition-default: all 0.3s ease-in-out;
+            --border-radius-md: 10px;
+            --border-radius-sm: 5px;
+        }
+
+        /* DepEd Fonts */
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: var(--deped-white);
+            color: var(--text-dark);
+            line-height: 1.6;
+            padding: 20px; /* Reduced padding */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        h1 {
+            font-family: 'Candu', sans-serif;
+            margin-bottom: 0.6em; /* Reduced margin */
+            letter-spacing: -0.5px;
+            font-size: 2.2rem; /* Reduced font size */
+            color: var(--deped-white);
+            animation: fadeInDown 0.9s ease-out;
+            margin-bottom: 0; /* Remove default bottom margin for h1 */
+        }
+
+        h2, h3 {
+            font-family: 'Candu', sans-serif;
+            color: var(--deped-blue);
+            margin-bottom: 0.6em; /* Reduced margin */
+            letter-spacing: -0.5px;
+        }
+
+
+        h2 {
+            font-size: 2rem; /* Slightly reduced */
+        }
+
+        h3 {
+            font-size: 1.4rem; /* Slightly reduced */
+        }
+
+        /* Solid Header Section */
+        header {
+            background-color: var(--deped-blue);
+            color: var(--deped-white);
+            padding: 15px 20px; /* Adjusted padding */
+            border-radius: var(--border-radius-md);
+            margin-bottom: 20px; /* Adjusted margin */
+            box-shadow: var(--box-shadow-sm);
+            display: flex; /* Use flexbox for alignment */
+            align-items: center; /* Align items vertically in the center */
+            justify-content: space-between; /* Space out title and navigation */
+            position: relative;
+            overflow: hidden;
+            z-index: 100; /* Ensure header is above other elements */
+        }
+
+        header h1 {
+            font-size: 2rem; /* Further reduced header size */
+            margin: 0; /* Reset margin for better alignment */
+        }
+
+        /* Navigation and Account Dropdown Container */
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+
+        /* Solid Navigation Bar */
+        nav {
+            background-color: transparent; /* Make navigation background transparent */
+            border-radius: var(--border-radius-md);
+            padding: 0; /* Remove padding from nav */
+            margin: 0; /* Remove margin from nav */
+            animation: none; /* Remove animation from nav */
+            transform: none; /* Remove transform from nav */
+            opacity: 1; /* Set opacity to 1 */
+            margin-right: 10px; /* Reduced margin to bring closer */
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            gap: 10px; /* Reduced gap */
+        }
+
+        nav ul li a {
+            display: inline-block;
+            padding: 8px 15px; /* Reduced padding */
+            text-decoration: none;
+            color: var(--deped-blue);
+            background-color: var(--deped-white);
+            border: 1px solid var(--deped-yellow);
+            border-radius: var(--border-radius-sm);
+            font-size: 0.9rem; /* Reduced font size */
+            font-weight: 600;
+            transition: var(--transition-default);
+        }
+
+        nav ul li a:hover {
+            background-color: var(--deped-blue);
+            color: var(--deped-yellow);
+            border-color: var(--deped-blue);
+            transform: translateY(-1px); /* Slightly reduced hover effect */
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1); /* Reduced shadow */
+        }
+
+        nav ul li a:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px var(--deped-light-blue); /* Reduced focus highlight */
+        }
+
+        /* Hamburger Menu */
+        .hamburger-menu {
+            display: none; /* Initially hidden */
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            gap: 6px;
+            z-index: 103; /* Higher than mobile nav */
+        }
+
+        .hamburger-menu .bar {
+            width: 25px;
+            height: 3px;
+            background-color: var(--deped-white);
+            border-radius: 3px;
+            transition: var(--transition-default);
+        }
+
+        .mobile-nav-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent overlay */
+            z-index: 101; /* Below the actual mobile nav content */
+        }
+
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: var(--deped-blue);
+            width: 300px; /* Adjust width as needed */
+            border-radius: var(--border-radius-md);
+            box-shadow: var(--box-shadow-sm);
+            z-index: 102; /* To be on top of the overlay */
+            margin-top: 0; /* Reset margin */
+        }
+
+        .mobile-nav.open {
+            display: block;
+        }
+
+        .mobile-nav .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            color: var(--deped-yellow);
+            font-size: 1.5rem;
+            cursor: pointer;
+            border: none;
+            background: none;
+        }
+
+        .mobile-nav ul {
+            list-style: none;
+            padding: 20px;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center; /* Center the items */
+        }
+
+        .mobile-nav ul li a {
+            display: block;
+            text-decoration: none;
+            color: var(--deped-yellow);
+            padding: 12px 20px;
+            border-radius: var(--border-radius-sm);
+            transition: var(--transition-default);
+            text-align: center;
+            width: 100%; /* Make links take full width */
+        }
+
+        .mobile-nav ul li a:hover {
+            background-color: rgba(255, 255, 99, 0.1); /* Lighten yellow on hover */
+        }
+
+        /* Account Pop-up */
+        .account-popup {
+            display: none;
+            position: absolute;
+            top: 50px; /* Adjust as needed */
+            right: 20px; /* Adjust as needed */
+            background-color: var(--deped-white);
+            border: 1px solid var(--deped-gray);
+            border-radius: var(--border-radius-sm);
+            box-shadow: var(--box-shadow-sm);
+            padding: 15px;
+            z-index: 101;
+            width: 150px; /* Adjust width as needed */
+            text-align: center;
+        }
+
+        .account-popup button {
+            display: block;
+            width: 100%;
+            padding: 8px 12px;
+            margin-bottom: 8px;
+            border: 1px solid var(--deped-light-blue);
+            border-radius: var(--border-radius-sm);
+            background-color: var(--deped-white);
+            color: var(--deped-blue);
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition-default);
+        }
+
+        .account-popup button:hover {
+            background-color: var(--deped-light-blue);
+            color: var(--deped-blue);
+        }
+
+        /* Geographic View Section */
+        #geographic-view-section {
+            padding: 20px;
+        }
+
+        .geographic-view-container {
+            background-color: var(--deped-white);
+            border-radius: var(--border-radius-md);
+            box-shadow: var(--box-shadow-sm);
+            overflow: hidden;
+        }
+
+        .geographic-view-header {
+            background-color: var(--deped-yellow);
+            color: var(--deped-blue);
+            padding: 15px;
+            text-align: center;
+            border-top-left-radius: var(--border-radius-md);
+            border-top-right-radius: var(--border-radius-md);
+            font-weight: bold;
+        }
+
+        .geographic-view-content {
+            padding: 20px;
+        }
+
+        #map {
+            width: 100%;
+            height: 600px; /* Adjust height as needed */
+            border: none;
+            border-radius: var(--border-radius-sm);
+            box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            nav {
+                display: none; /* Hide the main navigation on smaller screens */
+            }
+
+            .header-right {
+                justify-content: flex-end; /* Move hamburger to the right */
+                width: auto;
+            }
+
+            .hamburger-menu {
+                display: flex; /* Show the hamburger menu */
+            }
+
+            .mobile-nav-overlay {
+                display: none;
+            }
+
+            .mobile-nav {
+                display: none; /* Initially hide the mobile navigation */
+            }
+
+            .mobile-nav.open {
+                display: block; /* Show mobile navigation when open class is added */
+            }
+
+            .account-popup {
+                top: 45px;
+                right: 10px;
+            }
+
+            #map {
+                height: 400px; /* Adjust map height for smaller screens */
+            }
+        }
+
+        nav ul li a i {
+            margin-right: 3px; /* Reduced icon margin */
+        }
+    </style></head>
+<body>
+    <header>
+        <h1><i class="fas fa-graduation-cap" style="margin-right: 5px;"></i> DepEdXplore.</h1>
+        <div class="header-right">
+            <nav>
+                <ul>
+                    <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+                    <li><a href="/enrollment"><i class="fas fa-map-marker-alt"></i> By Location</a></li>
+                    <li><a href="/historical_view"><i class="fas fa-chart-line"></i> By Year</a></li>
+                    <li><a href="/generate_report"><i class="fas fa-file-alt"></i> Reports</a></li>
+                    <li><a href="/upload"><i class="fas fa-cog"></i> Admin</a></li>
+                    <li><a href="#" id="accountBtn"><i class="fas fa-user-circle"></i></a></li>
+                </ul>
+            </nav>
+            <div class="hamburger-menu" id="hamburger">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+        </div>
+        <div class="mobile-nav-overlay" id="navOverlay"></div>
+        <div class="mobile-nav" id="mobileNav">
+            <button class="close-btn" id="closeNav"><i class="fas fa-times"></i></button>
+            <ul>
+                <li><a href="/account"><i class="fas fa-user"></i> Account</a></li>
+                <li><a href="/settings"><i class="fas fa-cog"></i> Settings</a></li>
+                <li><a href="/help"><i class="fas fa-question-circle"></i> Help</a></li>
+                <li><a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <div class="account-popup" id="accountPopup">
+        <h4>Account</h4>
+        <button onclick="window.location.href='/account'"><i class="fas fa-user"></i> Account</button>
+        <button onclick="window.location.href='/settings'"><i class="fas fa-cog"></i> Settings</button>
+        <button onclick="window.location.href='/help'"><i class="fas fa-question-circle"></i> Help</button>
+        <button onclick="window.location.href='/logout'"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    </div>
+
+    <section id="geographic-view-section">
+        <div class="geographic-view-container">
+            <div class="geographic-view-header">
+                <h3>Enrollment Data by Location</h3>
+            </div>
+            <div class="geographic-view-content">
+                <iframe id="map" src="/dash" title="Geographic Dashboard View"></iframe>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const hamburger = document.getElementById('hamburger');
+            const mobileNav = document.getElementById('mobileNav');
+            const navOverlay = document.getElementById('navOverlay');
+            const closeNav = document.getElementById('closeNav');
+            const accountBtn = document.getElementById('accountBtn');
+            const accountPopup = document.getElementById('accountPopup');
+
+            hamburger.addEventListener('click', function() {
+                mobileNav.classList.add('open');
+                navOverlay.style.display = 'block';
+            });
+
+            closeNav.addEventListener('click', function() {
+                mobileNav.classList.remove('open');
+                navOverlay.style.display = 'none';
+            });
+
+            navOverlay.addEventListener('click', function() {
+                mobileNav.classList.remove('open');
+                navOverlay.style.display = 'none';
+            });
+
+            accountBtn.addEventListener('click', function(event) {
+                event.preventDefault(); // Prevent the default link behavior
+                accountPopup.style.display = (accountPopup.style.display === 'block') ? 'none' : 'block';
+            });
+
+            // Close the account popup if clicked outside
+            document.addEventListener('click', function(event) {
+                if (!accountBtn.contains(event.target) && !accountPopup.contains(event.target)) {
+                    accountPopup.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
