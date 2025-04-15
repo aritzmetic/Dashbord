@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate Report</title>
+    <style>
+        /* General Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        /* Header Section */
+        header {
+            background-color: #005ba1; /* DepEd blue color */
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            margin-bottom: 30px;
+            border-radius: 5px;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        /* Filters Section */
+        #filters {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        #filters select, #filters button {
+            padding: 12px;
+            font-size: 1rem;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        #filters select:focus, #filters button:focus {
+            outline: none;
+            border-color: #005ba1;
+            box-shadow: 0 0 5px rgba(0, 91, 161, 0.8);
+        }
+
+        #filters button {
+            background-color: #003c69; /* DepEd blue dark shade */
+            color: white;
+        }
+
+        #filters button:hover {
+            background-color: #002c51; /* Even darker blue for hover */
+        }
+
+        /* Footer Section */
+        footer {
+            text-align: center;
+            padding: 20px 0;
+            margin-top: 50px;
+            background-color: #005ba1;
+            color: white;
+            border-radius: 5px;
+        }
+
+        footer button {
+            padding: 12px 30px;
+            background-color: #003c69; /* Slightly darker blue */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        footer button:hover {
+            background-color: #002c51; /* Even darker blue for hover effect */
+        }
+
+        footer button:focus {
+            outline: none;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+
+            #filters select, #filters button {
+                width: 100%;
+                padding: 10px;
+                font-size: 0.9rem;
+                margin: 5px 0;
+            }
+
+            footer button {
+                font-size: 1rem;
+                padding: 10px 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Generate Report</h1>
+    </header>
+
+    <section id="filters">
+        <label for="year" style="font-size: 1.2rem; font-weight: 500;">Select Year:</label>
+        <select id="year">
+            <option value="2024">2024</option>
+            <option value="2023">2023</option>
+        </select>
+        <button onclick="generateReport()">Generate Report</button>
+    </section>
+
+    <footer>
+        <button onclick="window.location.href='/';">Back to Dashboard</button>
+    </footer>
+
+    <script>
+        function generateReport() {
+            // Logic to generate the report
+            const selectedYear = document.getElementById("year").value;
+            console.log(`Generating report for the year: ${selectedYear}`);
+            // Add your report generation logic here
+        }
+    </script>
+</body>
+</html>

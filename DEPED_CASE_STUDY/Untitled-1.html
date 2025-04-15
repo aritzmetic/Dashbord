@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DepEd Enrollment Dashboard</title>
+    <link rel="stylesheet" href="static/styles.css">
+</head>
+<body>
+    <header>
+        <h1>DepEd Enrollment Dashboard</h1>
+        <p>Your real-time hub for DepEd enrollment data</p>
+    </header>
+
+    <section id="kpis">
+        <div>Total Enrollments: {{ total_enrollments }}</div>
+        <div>Other KPIs: More stats go here...</div>
+    </section>
+
+    <section id="navigation">
+        <button onclick="window.location.href='/geographic_view'">📍 Explore by Location</button>
+        <button onclick="window.location.href='/historical_view'">📆 Compare by Year</button>
+        <button onclick="window.location.href='/generate_report'">📄 Generate Report</button>
+        <button onclick="window.location.href='/admin_panel'">🛠️ Admin Tools</button>
+    </section>
+
+    <section id="highlights">
+        <div>New dataset uploaded for 2025</div>
+    </section>
+</body>
+</html>
