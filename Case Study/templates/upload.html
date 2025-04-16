@@ -16,6 +16,8 @@
             --deped-light-blue: #ADD8E6; /* Light Blue */
             --deped-white: #FFFFFF;
             --deped-gray: #D3D3D3;
+            --deped-success: #28a745; 
+            --deped-error: #dc3545; 
             --text-dark: #333;
             --text-light: #777;
             --box-shadow-sm: 0 2px 5px rgba(0, 0, 0, 0.08);
@@ -685,6 +687,13 @@
                         </div>
                     {% endif %}
                 {% endwith %}
+
+                {% if last_updated %}
+                <p style="font-size: 0.85rem; color: var(--text-light); margin-top: 8px;">
+                    Active dataset last updated: {{ last_updated }}
+                </p>
+                {% endif %}
+
                  <form action="/upload" method="POST" enctype="multipart/form-data" id="uploadForm">
                      <div class="file-input-wrapper">
                          <span class="file-input-button"><i class="fas fa-file-csv"></i> Choose Cleaned CSV...</span>
