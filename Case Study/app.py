@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, flash, jsonify
+from flask import Flask, render_template, request, redirect, flash, jsonify, url_for
 import os
 from works import create_dash_app
 from data_config import get_dataset_path, fetch_enrollment_data_from_csv
@@ -14,12 +14,37 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.route("/")
+def index():
+    return render_template("account.html")
+
+@app.route("/home")
 def home():
     return render_template("home.html")
 
 @app.route("/enrollment")
 def enrollment():
     return render_template("enrollment.html")
+
+@app.route("/dashboard")
+def dashboard():
+    return render_template("dashboard.html")
+
+@app.route("/year")
+def year():
+    return render_template("year.html")
+
+@app.route("/report")
+def report():
+    return render_template("report.html")
+
+@app.route("/help")
+def help():
+    return render_template("help.html")
+
+@app.route("/logout")
+def logout():
+    return render_template("logout.html")
+
 
 @app.route("/upload", methods=["GET", "POST"])
 def upload():

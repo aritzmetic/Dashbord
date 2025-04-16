@@ -30,7 +30,7 @@
             background-color: var(--deped-white);
             color: var(--text-dark);
             line-height: 1.6;
-            padding: 20px; /* Reduced padding */
+            padding: 20px;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -39,51 +39,62 @@
             -moz-osx-font-smoothing: grayscale;
         }
 
-        h1 {
-            font-family: 'Candu', sans-serif;
-            margin-bottom: 0.6em; /* Reduced margin */
-            letter-spacing: -0.5px;
-            font-size: 2.2rem; /* Reduced font size */
+        h1, h2, h3 {
+            font-family: 'Montserrat';
             color: var(--deped-white);
-            animation: fadeInDown 0.9s ease-out;
-            margin-bottom: 0; /* Remove default bottom margin for h1 */
-        }
-
-        h2, h3 {
-            font-family: 'Candu', sans-serif;
-            color: var(--deped-blue);
-            margin-bottom: 0.6em; /* Reduced margin */
+            margin-bottom: 0.6em;
             letter-spacing: -0.5px;
+            font-weight: 600;
         }
 
+        h1 {
+            font-size: 2.2rem;
+            animation: fadeInDown 0.8s ease-out;
+            margin-bottom: 0;
+        }
 
         h2 {
-            font-size: 2rem; /* Slightly reduced */
+            font-size: 2rem;
         }
 
         h3 {
-            font-size: 1.4rem; /* Slightly reduced */
+            font-size: 1.4rem;
+            color: var(--deped-blue);
         }
 
         /* Solid Header Section */
         header {
             background-color: var(--deped-blue);
             color: var(--deped-white);
-            padding: 15px 20px; /* Adjusted padding */
+            padding: 15px 20px;
             border-radius: var(--border-radius-md);
-            margin-bottom: 20px; /* Adjusted margin */
+            margin-bottom: 20px;
             box-shadow: var(--box-shadow-sm);
-            display: flex; /* Use flexbox for alignment */
-            align-items: center; /* Align items vertically in the center */
-            justify-content: space-between; /* Space out title and navigation */
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             position: relative;
             overflow: hidden;
-            z-index: 100; /* Ensure header is above other elements */
+            z-index: 100;
         }
 
-        header h1 {
-            font-size: 2rem; /* Further reduced header size */
-            margin: 0; /* Reset margin for better alignment */
+        header .logo-area {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            margin-right: 10px; /* Add some space between the logo/text and the navigation */
+        }
+
+        header .logo-area img {
+            height: 80px; /* Adjust logo height as needed */
+            vertical-align: bottom;
+            margin-bottom: 2px; /* Space between logo and text */
+        }
+
+        header .logo-area h1 {
+            font-size: 0.6rem; /* Adjust text size as needed */
+            font-weight: bold;
+            margin: 0;
         }
 
         /* Navigation and Account Dropdown Container */
@@ -333,18 +344,23 @@
         nav ul li a i {
             margin-right: 3px; /* Reduced icon margin */
         }
-    </style></head>
+    </style>
+</head>
 <body>
     <header>
-        <h1><i class="fas fa-graduation-cap" style="margin-right: 5px;"></i> DepEdXplore.</h1>
+        <div class="logo-area">
+            <img src="/static/logo (1).png" alt="DepEd Logo" style="height: 120px;">
+            <h1>TRACKING & ANALYTICS FOR NATIONWIDE ACADEMIC WATCH</h1>
+        </div>
+
         <div class="header-right">
             <nav>
                 <ul>
-                    <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+                    <li><a href="/home"><i class="fas fa-home"></i> Home</a></li>
+                    <li><a href="/dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
                     <li><a href="/enrollment"><i class="fas fa-map-marker-alt"></i> By Location</a></li>
-                    <li><a href="/historical_view"><i class="fas fa-chart-line"></i> By Year</a></li>
-                    <li><a href="/generate_report"><i class="fas fa-file-alt"></i> Reports</a></li>
-                    <li><a href="/upload"><i class="fas fa-cog"></i> Admin</a></li>
+                    <li><a href="/year"><i class="fas fa-chart-line"></i> By Year</a></li>
+                    <li><a href="/report"><i class="fas fa-file-alt"></i> Reports</a></li>
                     <li><a href="#" id="accountBtn"><i class="fas fa-user-circle"></i></a></li>
                 </ul>
             </nav>
@@ -358,7 +374,7 @@
         <div class="mobile-nav" id="mobileNav">
             <button class="close-btn" id="closeNav"><i class="fas fa-times"></i></button>
             <ul>
-                <li><a href="/account"><i class="fas fa-user"></i> Account</a></li>
+                <li><a href="/upload"><i class="fas fa-cogs"></i> Admin</a></li>
                 <li><a href="/settings"><i class="fas fa-cog"></i> Settings</a></li>
                 <li><a href="/help"><i class="fas fa-question-circle"></i> Help</a></li>
                 <li><a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
@@ -368,8 +384,7 @@
 
     <div class="account-popup" id="accountPopup">
         <h4>Account</h4>
-        <button onclick="window.location.href='/account'"><i class="fas fa-user"></i> Account</button>
-        <button onclick="window.location.href='/settings'"><i class="fas fa-cog"></i> Settings</button>
+        <button onclick="window.location.href='/upload'"><i class="fas fa-cogs"></i> Admin</button>
         <button onclick="window.location.href='/help'"><i class="fas fa-question-circle"></i> Help</button>
         <button onclick="window.location.href='/logout'"><i class="fas fa-sign-out-alt"></i> Logout</button>
     </div>
@@ -421,6 +436,35 @@
                 }
             });
         });
+    </script>
+
+    <footer style="background-color: var(--deped-light-blue); color: var(--deped-blue); text-align: center; padding: 20px; border-radius: var(--border-radius-md); margin-top: 30px; box-shadow: var(--box-shadow-sm);">
+        <p style="font-size: 1.1rem; font-weight: bold;">"Susi sa Kinabukasan" - Empowering Filipino Education <i class="fas fa-book-open"></i></p>
+        <p style="font-size: 0.9rem;">Data-driven insights for a brighter future, powered by innovation.</p>
+        <p id="copyright" style="font-size: 0.8rem; color: var(--text-light);">© 2025 DepEd Enrollment Dashboard. All rights reserved.</p>
+    </footer>
+
+    <script>
+        function updateCopyrightYear() {
+            const year = new Date().getFullYear();
+            document.getElementById('copyright').textContent = `© ${year} DepEd Enrollment Dashboard. All rights reserved.`;
+        }
+
+        // Call the function to update the year when the page loads
+        updateCopyrightYear();
+
+        // A little extra fun: change the footer background on hover
+        const footer = document.querySelector('footer');
+        if (footer) {
+            footer.addEventListener('mouseover', () => {
+                footer.style.backgroundColor = ('--deped-yellow');
+                footer.style.color = ('--deped-blue');
+            });
+            footer.addEventListener('mouseout', () => {
+                footer.style.backgroundColor = ('--deped-light-blue');
+                footer.style.color = ('--deped-blue');
+            });
+        }
     </script>
 </body>
 </html>

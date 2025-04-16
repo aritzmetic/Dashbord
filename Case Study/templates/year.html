@@ -297,16 +297,6 @@
             margin-right: 6px;
         }
 
-        /* Main Content Area */
-        main {
-            flex-grow: 1; /* Ensure footer stays at the bottom */
-            padding: 20px;
-            border-radius: var(--border-radius-md);
-            background-color: var(--deped-white);
-            box-shadow: var(--box-shadow-sm);
-            margin-bottom: 20px;
-        }
-
         /* Animations */
         @keyframes spin {
             0% { transform: rotate(0deg); }
@@ -436,18 +426,6 @@
         <button onclick="window.location.href='/help'"><i class="fas fa-question-circle"></i> Help</button>
         <button onclick="window.location.href='/logout'"><i class="fas fa-sign-out-alt"></i> Logout</button>
     </div>
-
-    <main>
-        <section id="welcome-section" style="background-color: var(--deped-light-blue); color: var(--deped-blue); padding: 20px; border-radius: var(--border-radius-sm); margin-bottom: 20px; box-shadow: var(--box-shadow-sm);">
-            <h2 id="welcome-message" style="color: var(--deped-blue); margin-top: 0; margin-bottom: 10px;"></h2>
-            <p style="font-size: 1.1rem;">Your personalized dashboard provides a comprehensive overview of enrollment data.</p>
-        </section>
-
-        <section id="highlights">
-            <i class="fas fa-chart-bar"></i> Enrollment Trends: Stay informed on the latest nationwide enrollment figures.
-        </section>
-    </main>
-
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
 
@@ -458,18 +436,6 @@
             const closeNav = document.getElementById('closeNav');
             const accountBtn = document.getElementById('accountBtn');
             const accountPopup = document.getElementById('accountPopup');
-            const welcomeMessageElement = document.getElementById('welcome-message');
-
-            const firstName = localStorage.getItem('firstName');
-            const lastName = localStorage.getItem('lastName');
-
-            if (firstName && lastName) {
-                welcomeMessageElement.textContent = `Welcome back, ${firstName} ${lastName}!`;
-            } else {
-                // Fallback if names are not found (optional)
-                welcomeMessageElement.textContent = `Welcome back!`;
-            }
-
 
             hamburger.addEventListener('click', function() {
                 mobileNav.classList.add('open');
@@ -497,7 +463,6 @@
                 }
             });
         });
-
     </script>
 
     <footer style="background-color: var(--deped-light-blue); color: var(--deped-blue); text-align: center; padding: 20px; border-radius: var(--border-radius-md); margin-top: 30px; box-shadow: var(--box-shadow-sm);">

@@ -16,12 +16,9 @@
             --deped-light-blue: #ADD8E6; /* Light Blue */
             --deped-white: #FFFFFF;
             --deped-gray: #D3D3D3;
-            --deped-success: #28a745; /* Green for success */
-            --deped-error: #dc3545; /* Red for error (example) */
             --text-dark: #333;
             --text-light: #777;
             --box-shadow-sm: 0 2px 5px rgba(0, 0, 0, 0.08);
-            --box-shadow-md: 0 4px 10px rgba(0, 0, 0, 0.12);
             --transition-default: all 0.3s ease-in-out;
             --border-radius-md: 10px;
             --border-radius-sm: 5px;
@@ -34,7 +31,6 @@
             color: var(--text-dark);
             line-height: 1.6;
             padding: 20px;
-            padding-top: 80px; /* Add padding-top to prevent content overlap by sticky header */
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -44,10 +40,11 @@
         }
 
         h1, h2, h3 {
-            font-family: 'Candu', sans-serif;
-            color: var(--deped-white); /* Changed default to white for header */
+            font-family: 'Montserrat';
+            color: var(--deped-white);
             margin-bottom: 0.6em;
             letter-spacing: -0.5px;
+            font-weight: 600;
         }
 
         h1 {
@@ -58,12 +55,11 @@
 
         h2 {
             font-size: 2rem;
-            color: var(--deped-blue); /* Specific color for section headers */
         }
 
         h3 {
             font-size: 1.4rem;
-            color: var(--deped-blue); /* Specific color for popup headers */
+            color: var(--deped-blue);
         }
 
         /* Solid Header Section - STICKY */
@@ -71,22 +67,33 @@
             background-color: var(--deped-blue);
             color: var(--deped-white);
             padding: 15px 20px;
-            border-radius: 0 0 var(--border-radius-md) var(--border-radius-md); /* Rounded bottom corners */
+            border-radius: var(--border-radius-md);
             margin-bottom: 20px;
-            box-shadow: var(--box-shadow-md); /* Slightly stronger shadow */
+            box-shadow: var(--box-shadow-sm);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            position: fixed; /* Changed to fixed */
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000; /* High z-index for sticky header */
-            transition: padding 0.3s ease-in-out; /* Transition for potential scroll effects */
+            position: relative;
+            overflow: hidden;
+            z-index: 100;
         }
 
-        header h1 {
-            font-size: 2rem;
+        header .logo-area {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            margin-right: 10px; /* Add some space between the logo/text and the navigation */
+        }
+
+        header .logo-area img {
+            height: 80px; /* Adjust logo height as needed */
+            vertical-align: bottom;
+            margin-bottom: 2px; /* Space between logo and text */
+        }
+
+        header .logo-area h1 {
+            font-size: 0.6rem; /* Adjust text size as needed */
+            font-weight: bold;
             margin: 0;
         }
 
@@ -102,6 +109,9 @@
             border-radius: var(--border-radius-md);
             padding: 0;
             margin: 0;
+            animation: none;
+            transform: none;
+            opacity: 1;
             margin-right: 10px;
         }
 
@@ -130,17 +140,13 @@
             background-color: var(--deped-blue);
             color: var(--deped-yellow);
             border-color: var(--deped-blue);
-            transform: translateY(-2px) scale(1.02); /* Enhanced hover */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Enhanced shadow */
+            transform: translateY(-1px);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
         }
 
         nav ul li a:focus {
             outline: none;
-            box-shadow: 0 0 0 3px var(--deped-light-blue);
-        }
-
-        nav ul li a i {
-            margin-right: 4px; /* Slightly more space */
+            box-shadow: 0 0 0 2px var(--deped-light-blue);
         }
 
         /* Hamburger Menu */
@@ -607,15 +613,20 @@
     </head>
 <body>
     <header>
-        <h1><i class="fas fa-cog"></i> DepEd Admin Panel</h1>
+        <div class="logo-area">
+            <img src="/static/logo (1).png" alt="DepEd Logo" style="height: 120px;">
+            <h1>TRACKING & ANALYTICS FOR NATIONWIDE ACADEMIC WATCH</h1>
+        </div>
+
         <div class="header-right">
             <nav>
                 <ul>
-                    <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+                    <li><a href="/home"><i class="fas fa-home"></i> Home</a></li>
+                    <li><a href="/dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
                     <li><a href="/enrollment"><i class="fas fa-map-marker-alt"></i> By Location</a></li>
-                    <li><a href="/historical_view"><i class="fas fa-chart-line"></i> By Year</a></li>
+                    <li><a href="/year"><i class="fas fa-chart-line"></i> By Year</a></li>
                     <li><a href="/generate_report"><i class="fas fa-file-alt"></i> Reports</a></li>
-                    <li><a href="/upload"><i class="fas fa-cogs"></i> Admin</a></li> <li><a href="#" id="accountBtn"><i class="fas fa-user-circle"></i></a></li>
+                    <li><a href="#" id="accountBtn"><i class="fas fa-user-circle"></i></a></li>
                 </ul>
             </nav>
             <div class="hamburger-menu" id="hamburger">
@@ -624,28 +635,21 @@
                 <div class="bar"></div>
             </div>
         </div>
+        <div class="mobile-nav-overlay" id="navOverlay"></div>
+        <div class="mobile-nav" id="mobileNav">
+            <button class="close-btn" id="closeNav"><i class="fas fa-times"></i></button>
+            <ul>
+                <li><a href="/upload"><i class="fas fa-cogs"></i> Admin</a></li>
+                <li><a href="/settings"><i class="fas fa-cog"></i> Settings</a></li>
+                <li><a href="/help"><i class="fas fa-question-circle"></i> Help</a></li>
+                <li><a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </div>
     </header>
 
-    <div class="mobile-nav-overlay" id="navOverlay"></div>
-    <div class="mobile-nav" id="mobileNav">
-        <button class="close-btn" id="closeNav"><i class="fas fa-times"></i></button>
-        <ul>
-             <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
-            <li><a href="/enrollment"><i class="fas fa-map-marker-alt"></i> By Location</a></li>
-            <li><a href="/historical_view"><i class="fas fa-chart-line"></i> By Year</a></li>
-            <li><a href="/generate_report"><i class="fas fa-file-alt"></i> Reports</a></li>
-            <li><a href="/upload"><i class="fas fa-cogs"></i> Admin</a></li>
-            <hr style="border-color: rgba(255, 218, 99, 0.3); width: 90%; margin: 10px auto;"> <li><a href="/account"><i class="fas fa-user"></i> Account</a></li>
-            <li><a href="/settings"><i class="fas fa-cog"></i> Settings</a></li>
-            <li><a href="/help"><i class="fas fa-question-circle"></i> Help</a></li>
-            <li><a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
-        </ul>
-    </div>
-
     <div class="account-popup" id="accountPopup">
-        <h4>Account Menu</h4>
-        <button onclick="window.location.href='/account'"><i class="fas fa-user"></i> Account</button>
-        <button onclick="window.location.href='/settings'"><i class="fas fa-cog"></i> Settings</button>
+        <h4>Account</h4>
+        <button onclick="window.location.href='/upload'"><i class="fas fa-cogs"></i> Admin</button>
         <button onclick="window.location.href='/help'"><i class="fas fa-question-circle"></i> Help</button>
         <button onclick="window.location.href='/logout'"><i class="fas fa-sign-out-alt"></i> Logout</button>
     </div>
@@ -696,7 +700,7 @@
     </section>
 
     <footer>
-        <button onclick="window.location.href='/'"><i class="fas fa-arrow-left"></i> Back to Dashboard</button>
+        <button onclick="window.location.href='/home'"><i class="fas fa-arrow-left"></i> Back to Home</button>
     </footer>
 
     <script>
@@ -872,5 +876,34 @@
 
         });
     </script>
+
+<footer style="background-color: var(--deped-light-blue); color: var(--deped-blue); text-align: center; padding: 20px; border-radius: var(--border-radius-md); margin-top: 30px; box-shadow: var(--box-shadow-sm);">
+    <p style="font-size: 1.1rem; font-weight: bold;">"Susi sa Kinabukasan" - Empowering Filipino Education <i class="fas fa-book-open"></i></p>
+    <p style="font-size: 0.9rem;">Data-driven insights for a brighter future, powered by innovation.</p>
+    <p id="copyright" style="font-size: 0.8rem; color: var(--text-light);">© 2025 DepEd Enrollment Dashboard. All rights reserved.</p>
+</footer>
+
+<script>
+    function updateCopyrightYear() {
+        const year = new Date().getFullYear();
+        document.getElementById('copyright').textContent = `© ${year} DepEd Enrollment Dashboard. All rights reserved.`;
+    }
+
+    // Call the function to update the year when the page loads
+    updateCopyrightYear();
+
+    // A little extra fun: change the footer background on hover
+    const footer = document.querySelector('footer');
+    if (footer) {
+        footer.addEventListener('mouseover', () => {
+            footer.style.backgroundColor = (--deped-yellow);
+            footer.style.color = (--deped-blue);
+        });
+        footer.addEventListener('mouseout', () => {
+            footer.style.backgroundColor = (--deped-light-blue);
+            footer.style.color = (--deped-blue);
+        });
+    }
+</script>
 </body>
 </html>
