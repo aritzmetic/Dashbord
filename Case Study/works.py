@@ -7,8 +7,8 @@ from data_config import get_dataset_path
 # Flask server
 server = Flask(__name__)
 
-def create_dash_app(server, url_base_pathname='/dash/'):
-    dash_app = Dash(
+def create_dash_app(server, url_base_pathname='/dashenrollment/'):
+    dash_app_works = Dash(
         __name__,
         server=server,
         url_base_pathname=url_base_pathname,
@@ -19,7 +19,7 @@ def create_dash_app(server, url_base_pathname='/dash/'):
         ]
     )
 
-    dash_app.layout = html.Div([
+    dash_app_works.layout = html.Div([
         html.Div([
             html.Div(id='summary-stats', className="w-3/4 mx-auto mb-6 p-4 bg-blue-100 rounded-md text-center font-semibold"),
 
@@ -60,7 +60,7 @@ def create_dash_app(server, url_base_pathname='/dash/'):
         ], className="max-w-3xl mx-auto bg-white p-6 shadow-lg rounded-md")
     ], className="bg-gray-100 min-h-screen flex items-center justify-center")
 
-    @dash_app.callback(
+    @dash_app_works.callback(
         Output('region-dropdown', 'options'),
         Input('region-dropdown', 'id')  # dummy input
     )
@@ -68,7 +68,7 @@ def create_dash_app(server, url_base_pathname='/dash/'):
         df = pd.read_csv(get_dataset_path())
         return [{'label': region, 'value': region} for region in sorted(df['Region'].dropna().unique())]
 
-    @dash_app.callback(
+    @dash_app_works.callback(
         Output('school-dropdown', 'options'),
         Input('region-dropdown', 'value')
     )
@@ -77,7 +77,7 @@ def create_dash_app(server, url_base_pathname='/dash/'):
         filtered_df = df if not region else df[df['Region'] == region]
         return [{'label': school, 'value': school} for school in filtered_df['School Name'].unique()]
 
-    @dash_app.callback(
+    @dash_app_works.callback(
         [Output('school-table', 'data'),
          Output('enrollment-bar-chart', 'figure'),
          Output('school-details', 'children'),
@@ -140,7 +140,7 @@ def create_dash_app(server, url_base_pathname='/dash/'):
 
         return table_data, enrollment_fig, details, gender_fig, line_fig
 
-    @dash_app.callback(
+    @dash_app_works.callback(
         Output('summary-stats', 'children'),
         Input('region-dropdown', 'value')
     )
@@ -154,4 +154,4 @@ def create_dash_app(server, url_base_pathname='/dash/'):
 
         return f"Total Schools: {total_schools} | Average Enrollment: {int(avg_enrollment)}"
 
-    return dash_app
+    return dash_app_works
